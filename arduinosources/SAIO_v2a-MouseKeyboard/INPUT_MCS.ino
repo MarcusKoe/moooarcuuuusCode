@@ -141,9 +141,11 @@ void MousewithDpad() {
     Keyboard.release(KEY_SPACE);
   }
   if (btns[B_SELECT]) {
+    Keyboard.press(KEY_LEFT_CTRL);
     Keyboard.press(KEY_F5);
   } else {
     Keyboard.release(KEY_F5);
+    Keyboard.release(KEY_LEFT_CTRL);
   }
 
 }
@@ -244,7 +246,7 @@ void JoystickMouse(){
   } else {
     Keyboard.release(KEY_PERIOD);
   }
-  if (btns[B_X]) {
+  if (btns[B_Y]) {
     Keyboard.press(KEY_M);
   } else {
     Keyboard.release(KEY_M);
@@ -256,9 +258,11 @@ void JoystickMouse(){
     Keyboard.release(KEY_SPACE);
   }
   if (btns[B_SELECT]) {
+    Keyboard.press(KEY_LEFT_CTRL);
     Keyboard.press(KEY_F5);
   } else {
     Keyboard.release(KEY_F5);
+    Keyboard.release(KEY_LEFT_CTRL);
   }
   
 }
@@ -267,7 +271,56 @@ void JoystickMouse(){
 
 
 
+void Setconfig(){
+  if(L1State == 1){
+    cfg.Mousespeed += 1 ;
+    if(cfg.Mousespeed == 5){
+      cfg.Mousespeed = 0 ;
+    }
+  }
+  if(L1State == 2){
+    cfg.XInvert = !cfg.XInvert ;
+  }
+  if(L1State == 3){
+    cfg.mousemode += 1 ;
+    if(cfg.mousemode == 2){
+      cfg.mousemode = 0 ;
+    }
+  }
+  if(L1State == 4){
+    // Nothing to do here
+  }
+  if(L1State != 0){
+    eepromWrite();  
+    analogWrite(PIN_BL, 255);
+    delay(500);
+    analogWrite(PIN_BL, cfg.bl_val);
+  }
+  L1Presstime = 0 ;
+  L1State = 0 ;
 
+  if(R1State == 1){
+    cfg.Joy1Mouseaxis = !cfg.Joy1Mouseaxis ;
+  }
+  if(R1State == 2){
+    cfg.YInvert = !cfg.YInvert ;
+  }
+  if(R1State == 3){
+    cfg.screensavermode = !cfg.screensavermode ;
+  }
+  if(R1State == 4){
+    // Nothing to do here
+  }
+  if(R1State != 0){
+    eepromWrite();  
+    analogWrite(PIN_BL, 255);
+    delay(500);
+    analogWrite(PIN_BL, cfg.bl_val);
+  }
+  R1Presstime = 0 ;
+  R1State = 0 ;
+
+}
 
 
 
@@ -287,34 +340,15 @@ void KeyboardMouseJoystickConfig(){
       } else if (L1Deltatime <10000) { 
         L1State = 2 ;
         analogWrite(PIN_BL, 150);
-      } else if (L1Deltatime >=10000) { 
+      } else if (L1Deltatime <15000) { 
         L1State = 3 ;
+        analogWrite(PIN_BL, 200);
+      } else if (L1Deltatime <20000) { 
+        L1State = 4 ;
         analogWrite(PIN_BL, 225);
       }
     } else {
-      if(L1State == 1){
-        cfg.Mousespeed += 1 ;
-        if(cfg.Mousespeed == 5){
-          cfg.Mousespeed = 0 ;
-        }
-      }
-      if(L1State == 2){
-        cfg.XInvert = !cfg.XInvert ;
-      }
-      if(L1State == 3){
-        cfg.mousemode += 1 ;
-        if(cfg.mousemode == 2){
-          cfg.mousemode = 0 ;
-        }
-      }
-      if(L1State != 0){
-        eepromWrite();  
-        analogWrite(PIN_BL, 255);
-        delay(500);
-        analogWrite(PIN_BL, cfg.bl_val);
-      }
-      L1Presstime = 0 ;
-      L1State = 0 ;
+      Setconfig() ;
     }
 
 
@@ -330,29 +364,18 @@ void KeyboardMouseJoystickConfig(){
       } else if (R1Deltatime <10000) { 
         R1State = 2 ;
         analogWrite(PIN_BL, 150);
-      } else if (R1Deltatime >=10000) { 
+      } else if (R1Deltatime <15000) { 
         R1State = 3 ;
+        analogWrite(PIN_BL, 200);
+      } else if (R1Deltatime <20000) { 
+        R1State = 4 ;
         analogWrite(PIN_BL, 225);
       }
     } else {
-      if(R1State == 1){
-        cfg.Joy1Mouseaxis = !cfg.Joy1Mouseaxis ;
-      }
-      if(R1State == 2){
-        cfg.YInvert = !cfg.YInvert ;
-      }
-      if(R1State == 3){
-        // Nothing to do here
-      }
-      if(R1State != 0){
-        eepromWrite();  
-        analogWrite(PIN_BL, 255);
-        delay(500);
-        analogWrite(PIN_BL, cfg.bl_val);
-      }
-      R1Presstime = 0 ;
-      R1State = 0 ;
+      Setconfig();
     }
+  } else {
+    Setconfig();
   }
 
 }

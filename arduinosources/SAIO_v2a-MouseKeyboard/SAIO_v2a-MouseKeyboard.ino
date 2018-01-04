@@ -95,12 +95,13 @@ struct Config {
   int16_t dz    = DEADZONE;
   bool iscalib1 = 0;
   bool iscalib2 = 0;
-  // Mouseconfig from Moarcus
+  // Config from Moarcus
   uint8_t mousemode = 0 ;
   bool Joy1Mouseaxis = 0 ;
   bool XInvert = 0 ;
   bool YInvert = 0 ;
   uint8_t Mousespeed = 0 ;
+  bool screensavermode = 0 ;
 } cfg;
 
 static uint8_t model = MODEL;
@@ -139,6 +140,8 @@ uint8_t L1State = 0 ;   // 0 = off, 1 = shortpress, 2 = middlepress, 3 = longpre
 uint8_t R1State = 0 ;   // 0 = off, 1 = shortpress, 2 = middlepress, 3 = longpress
 uint32_t L1Presstime = 0 ;
 uint32_t R1Presstime = 0 ;
+uint32_t ButtonLastpressed = 0 ;
+uint32_t screensavertime = 180 ;   // seconds since last press to screen fading
 
 
 //--------------------------------------------------------------------------------------
@@ -240,6 +243,7 @@ void loop() {
       // Set gamepad buttons (USB)
       //setGamepad();
       KeyboardJoystickMouse();
+      screensaver();
 
     } else { //reset frozen counter
       if (millis() - tfrozen > FREEZE_DURATION) {

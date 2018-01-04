@@ -95,6 +95,13 @@ struct Config {
   int16_t dz    = DEADZONE;
   bool iscalib1 = 0;
   bool iscalib2 = 0;
+  // Config from Moarcus
+  uint8_t mousemode = 0 ;
+  bool Joy1Mouseaxis = 0 ;
+  bool XInvert = 0 ;
+  bool YInvert = 0 ;
+  uint8_t Mousespeed = 0 ;
+  bool screensavermode = 0 ;
 } cfg;
 
 static uint8_t model = MODEL;
@@ -116,6 +123,12 @@ volatile uint16_t currVal = 0;
 
 // Button update state
 volatile byte state = LOW;
+
+
+// MOARCUS vars
+// here is no mouseconfig
+uint32_t ButtonLastpressed = 0 ;
+uint32_t screensavertime = 180 ;   // seconds since last press to screen fading
 
 //--------------------------------------------------------------------------------------
 // MAIN SETUP
@@ -210,6 +223,7 @@ void loop() {
 
       // Set gamepad buttons (USB)
       setGamepad();
+      screensaver();
 
     } else { //reset frozen counter
       if (millis() - tfrozen > FREEZE_DURATION) {
