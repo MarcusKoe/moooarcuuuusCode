@@ -17,10 +17,18 @@ from pythonfunctions import rmdir
 cron_selectbutton = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
 cron_ports = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py.logfile.txt 2>&1'
 
+d_usr = '/home/pi'
+d_bse = os.path.join(d_usr, 'moooarcuuuusCode')
+
+currentdir = os.getcwd()
+
+if (not currentdir == d_bse):
+	print('Wrong directory')
+	sys.exit()
+
 warning = '\n \nParts of this program are not created by me. These parts can have their own licenses. The following license text only refers to my program code.\n \n This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3. \n \n This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n \n You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>. \n \n THIS IS UNSTABLE SOFTWARE! \n \n THIS SOFTWARE WORKS ONLY WITH KITES SAIO BOARD!!! \n \n'
 
 print(warning)
-
 
 yesno = raw_input('Accept? Type "YES" or "NO"  ')
 if (not yesno == 'YES'):
@@ -31,43 +39,10 @@ sleep(1)
 print('Generate list of installed packages, this can take a while')
 packagecache = apt.Cache()
 
-d_usr = '/home/pi'
-d_bse = os.path.join(d_usr, 'moooarcuuuusCode')
-
-if (os.path.isdir(d_bse)):
-	print(d_bse)
-	print('\n\nDirectory exists. Should the directory be cleaned?')
-	yesno = raw_input('Type "YES" or "NO" ')
-	if (yesno == 'YES'):
-		rmdir(d_bse)
-		sleep(1)
-
-print('Make directory')
-sleep(1)
-mkdir(d_bse)
-f_zipfile = os.path.join(d_usr, 'moooarcuuuusCode.zip')
-f_setupfile = os.path.join(d_usr, 'setup.py')
-f_pythonfuncts = os.path.join(d_usr, 'pythonfunctions.py')
-
-sleep(1)
-if os.path.isfile(f_zipfile):
-	print('"moooarcuuuusCode.zip" found, use this file for installation')
-	yesno = raw_input('Type "YES" or "NO" ')
-	if (yesno == 'NO'):
-		rm(f_zipfile)
-		os.system('curl https://toppoint.de/~marcus/gb/moooarcuuuusCode.zip > ' + f_zipfile)	
-	elif (yesno == 'YES'):
-		print('Offline Installation')
-	else:
-		print('No valid input')
-		sys.exit()
-else:
-	print('Data not found... Downloading \n')
-	os.system('curl https://toppoint.de/~marcus/gb/moooarcuuuusCode.zip > ' + f_zipfile)
 
 
-print('\n Decompressing... If there are files, unzip will ask you to overwite')
-os.system('unzip ' + f_zipfile)
+
+
 
 def makeconfig():
 	print('Configuration...')
@@ -129,8 +104,14 @@ elif (yesno == 'YES'):
 			yesno = raw_input('Type "YES" or "NO" ')
 			if (yesno == 'YES'):
 				os.system(aptstring)
+				print('Generate list of installed packages, this can take a while')
+				packagecache = apt.Cache()
+		print('Make pngview executable')
+		b_pngv = os.path.join(d_bse, 'pngview')
+		chmodcommand = 'chmod +x ' + b_pngv
+		os.system(chmodcommand)
 
-	print('Would you add the "ports" method (select with ports in ES)?')
+	print('\n\nWould you add the "ports" method (select with ports in ES)?')
 	yesno = raw_input('Type "YES" or "NO"  ')
 	if (yesno == 'YES'):
 		if ('execute-ports-controllerflashing.py' in result):
@@ -155,11 +136,6 @@ else:
 
 
 	
-print('Deleting setup.py, pythonfunctions.py and moooarcuuuusCode.zip')
 sleep(1)
-rm(f_zipfile)
-rm(f_setupfile)
-rm(f_pythonfuncts)
-rm(f_pythonfuncts + 'c')
 
 print('Installation ready. Please reboot this system. Just type "sudo reboot" \n \n Have a nice day')

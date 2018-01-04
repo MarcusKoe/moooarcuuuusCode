@@ -13,11 +13,11 @@ def mkdir(directory):
 def find(path, start, stop):
 	path = str(path)
 	start = int(start)
-	stopp = int(stop)
+	stop = int(stop)
 	
 	socket = len(string.split(path, '/')) - 1
 	start = start + socket
-	stopp = stop + socket
+	stop = stop + socket
 	
 	res = sum([[os.path.join(dirpath, filename) for filename in filenames] for dirpath, dirnames, filenames in os.walk(path) if start <= dirpath.count(os.sep) <= stop], [])
 	return res
