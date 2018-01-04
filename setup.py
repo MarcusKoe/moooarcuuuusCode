@@ -1,0 +1,165 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+
+import os
+import apt
+import sys
+from time import sleep as sleep
+import time
+import subprocess
+from ConfigParser import SafeConfigParser
+from pythonfunctions import rm
+from pythonfunctions import mkdir
+from pythonfunctions import find
+from pythonfunctions import rmdir
+
+cron_selectbutton = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
+cron_ports = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py.logfile.txt 2>&1'
+
+warning = '\n \nParts of this program are not created by me. These parts can have their own licenses. The following license text only refers to my program code.\n \n This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3. \n \n This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n \n You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>. \n \n THIS IS UNSTABLE SOFTWARE! \n \n THIS SOFTWARE WORKS ONLY WITH KITES SAIO BOARD!!! \n \n'
+
+print(warning)
+
+
+yesno = raw_input('Accept? Type "YES" or "NO"  ')
+if (not yesno == 'YES'):
+	print("Have a nice day")
+	sys.exit()
+
+sleep(1)
+print('Generate list of installed packages, this can take a while')
+packagecache = apt.Cache()
+
+d_usr = '/home/pi'
+d_bse = os.path.join(d_usr, 'moooarcuuuusCode')
+
+if (os.path.isdir(d_bse)):
+	print(d_bse)
+	print('\n\nDirectory exists. Should the directory be cleaned?')
+	yesno = raw_input('Type "YES" or "NO" ')
+	if (yesno == 'YES'):
+		rmdir(d_bse)
+		sleep(1)
+
+print('Make directory')
+sleep(1)
+mkdir(d_bse)
+f_zipfile = os.path.join(d_usr, 'moooarcuuuusCode.zip')
+f_setupfile = os.path.join(d_usr, 'setup.py')
+f_pythonfuncts = os.path.join(d_usr, 'pythonfunctions.py')
+
+sleep(1)
+if os.path.isfile(f_zipfile):
+	print('"moooarcuuuusCode.zip" found, use this file for installation')
+	yesno = raw_input('Type "YES" or "NO" ')
+	if (yesno == 'NO'):
+		rm(f_zipfile)
+		os.system('curl https://toppoint.de/~marcus/gb/moooarcuuuusCode.zip > ' + f_zipfile)	
+	elif (yesno == 'YES'):
+		print('Offline Installation')
+	else:
+		print('No valid input')
+		sys.exit()
+else:
+	print('Data not found... Downloading \n')
+	os.system('curl https://toppoint.de/~marcus/gb/moooarcuuuusCode.zip > ' + f_zipfile)
+
+
+print('\n Decompressing... If there are files, unzip will ask you to overwite')
+os.system('unzip ' + f_zipfile)
+
+def makeconfig():
+	print('Configuration...')
+	print('What board do you have? \n')
+	bvers = raw_input('Type "0.5" or "0.6" ')
+	if not (bvers == '0.5' or bvers == '0.6'):
+		print('No valid input')
+		sys.exit()
+	print('What screen do you have? \n')
+	screensize = raw_input('Type "320x240" or "640x480" ')
+	if not (screensize == '320x240' or screensize == '640x480'):
+		print('No valid input')
+		sys.exit()
+	xres = screensize[0:3]
+	yres = screensize[4:7]
+	#print(xres)
+	#print(yres)
+	parser = SafeConfigParser()
+	parser.add_section('general')
+	parser.set('general', 'boardversion', bvers)
+	parser.set('general', 'xres', xres)
+	parser.set('general', 'yres', yres)
+	with open(f_conf, 'w') as cfile:
+		parser.write(cfile)
+
+f_conf = os.path.join(d_bse, 'configuration.ini')
+if (os.path.isfile(f_conf)):
+	yesno = raw_input('There is a config file. Should the configuration file be deleted? \n \n Type "YES" or "NO" ')
+	if (yesno == 'NO'):
+		print('Keep Configuration \n')
+	elif (yesno == 'YES'):
+		rm(f_conf)
+		makeconfig()
+	else:
+		print('No valid input')
+		sys.exit()
+else:
+	makeconfig()
+
+print('Should the "crontab" (autostart) be updated?')
+yesno = raw_input('Type "YES" or "NO" ')
+if (yesno == 'NO'):
+	None
+elif (yesno == 'YES'):
+	result = subprocess.check_output('crontab -l', shell=True)
+	print('Would you add the "selectbutton" method (buttons on RPI GPIO 24 and 25)?')
+	yesno = raw_input('Type "YES" or "NO"  ')
+	if (yesno == 'YES'):
+		if ('execute-selectbutton-controllerflashing.py' in result):
+			print('Selectbutton already exists, skip insert')
+		else:
+			os.system('(crontab -l 2>/dev/null; echo "\n \n' + cron_selectbutton + '")| crontab -')
+		
+		if not packagecache['avrdude'].is_installed or not packagecache['imagemagick'].is_installed:
+			print('You need "avrdude" and "imagemagick" installed')
+			print('Should I execute:')
+			aptstring = "sudo apt-get update && sudo apt-get install -y avrdude imagemagick"
+			print(aptstring)
+			yesno = raw_input('Type "YES" or "NO" ')
+			if (yesno == 'YES'):
+				os.system(aptstring)
+
+	print('Would you add the "ports" method (select with ports in ES)?')
+	yesno = raw_input('Type "YES" or "NO"  ')
+	if (yesno == 'YES'):
+		if ('execute-ports-controllerflashing.py' in result):
+			print('Ports already exists, skip insert')
+		else:
+			os.system('(crontab -l 2>/dev/null; echo "\n \n' + cron_ports + ' \n")| crontab -')	
+		
+		if not (packagecache['avrdude'].is_installed):
+			print('You need "avrdude" installed')
+			print('Should I execute:')
+			aptstring = "sudo apt-get update && sudo apt-get -y install avrdude"
+			print(aptstring)
+			yesno = raw_input('Type "YES" or "NO" ')
+			if (yesno == 'YES'):
+				os.system(aptstring)
+else:
+	print('No valid input')
+	sys.exit()
+
+
+
+
+
+	
+print('Deleting setup.py, pythonfunctions.py and moooarcuuuusCode.zip')
+sleep(1)
+rm(f_zipfile)
+rm(f_setupfile)
+rm(f_pythonfuncts)
+rm(f_pythonfuncts + 'c')
+
+print('Installation ready. Please reboot this system. Just type "sudo reboot" \n \n Have a nice day')
