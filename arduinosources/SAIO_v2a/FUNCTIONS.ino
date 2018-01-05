@@ -209,29 +209,3 @@ void eepromRead() {
   }
 }
 
-//--------------------------------------------------------------------------------------
-// Screensaver
-void screensaver(){
-
-  if(cfg.screensavermode == 1){
-    for(int i=0; i<sizeof(btns); i++){
-        if(btns[i]){
-            ButtonLastpressed = millis();
-        }
-    }
-    //Serial.println('screensaver active')
-    uint32_t deltatime = millis() - ButtonLastpressed ;
-    uint32_t ssStarttime = ButtonLastpressed + screensavertime * 1000 ;
-    if(deltatime > ssStarttime){
-      uint32_t ssEndtime = ssStarttime + 15000 ;
-      if(deltatime >= ssEndtime){
-          deltatime = ssEndtime ;
-      }
-      uint8_t val = map(deltatime, ssStarttime, ssEndtime, cfg.bl_val, 255);
-      analogWrite(PIN_BL, val) ;
-    } else {
-      analogWrite(PIN_BL, cfg.bl_val);
-    }
-  }
-
-}

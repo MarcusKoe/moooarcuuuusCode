@@ -124,7 +124,6 @@ volatile uint16_t currVal = 0;
 // Button update state
 volatile byte state = LOW;
 
-
 // MOARCUS vars
 uint32_t MouseIntervalls[4][3] = {
 
@@ -143,6 +142,7 @@ uint32_t L1Presstime = 0 ;
 uint32_t R1Presstime = 0 ;
 uint32_t ButtonLastpressed = 0 ;
 uint32_t screensavertime = 180 ;   // seconds since last press to screen fading
+
 
 //--------------------------------------------------------------------------------------
 // MAIN SETUP
@@ -212,7 +212,12 @@ void setup() {
   calibrateJoystick();
   
   // Sends a clean report to the host. This is important on any Arduino type.
-  Gamepad.begin();
+  //Gamepad.begin();
+
+  Mouse.begin();
+  Keyboard.begin();
+
+
 }
 
 //--------------------------------------------------------------------------------------
@@ -236,9 +241,10 @@ void loop() {
     if (!isfrozen) {
 
       // Set gamepad buttons (USB)
-      setGamepad();
+      //setGamepad();
+      DukeNukem();
       ExtendedConfig();
-      screensaver();
+      screensaver() ;
 
     } else { //reset frozen counter
       if (millis() - tfrozen > FREEZE_DURATION) {

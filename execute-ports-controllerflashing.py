@@ -22,7 +22,7 @@ parser = SafeConfigParser()
 parser.read(f_conf)
 
 boardversion = parser.get('general', 'boardversion')
-d_prec = os.path.join(d_bse, 'arduino-precompiled-selectbutton', boardversion)
+d_prec = os.path.join(d_bse, 'arduino-precompiled-ports', boardversion)
 
 
 files = find(d_prec, 0, 100)

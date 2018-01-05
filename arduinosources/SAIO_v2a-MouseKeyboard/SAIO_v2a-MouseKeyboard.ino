@@ -243,7 +243,8 @@ void loop() {
       // Set gamepad buttons (USB)
       //setGamepad();
       KeyboardJoystickMouse();
-      screensaver();
+      ExtendedConfig();
+      screensaver() ;
 
     } else { //reset frozen counter
       if (millis() - tfrozen > FREEZE_DURATION) {

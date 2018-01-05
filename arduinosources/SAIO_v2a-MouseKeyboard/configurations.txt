@@ -26,7 +26,13 @@ YmouseInvert = 0, 1
 eeprom	YInvert
 
 Mode + L1 < 15 sek
-Controllermode = 0, 1, 2
+Controllermode = 0, 1
 	0 = Mouse without joystick R1 press for Keyboard  without R2 L2	
 	1 = Mouse with joystick without R2 L2
 eeprom	controllermode
+
+Mode + R1 < 15 sek
+Screensaver = 0, 1
+	0 = Screensaver off
+	1 = Screensaver after 4 min
+eeprom	screensavermode

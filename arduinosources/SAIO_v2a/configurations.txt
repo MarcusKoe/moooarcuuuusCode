@@ -1,0 +1,38 @@
+Mode + L1 < 5 sek
+MouseSpeed = 0, 1, 2, 3, 4
+	0 = 125	Intervalltime dpad speed +1	10	map maxaxis joystick (Analog MouseDistance)
+	1 = 100					13
+	2 = 75					16
+	3 = 50					19
+	4 = 35					21
+eeprom	Mousespeed
+
+Mode + R1 < 5 sek
+JoyAxis = 0, 1
+	0 = Nomal
+	1 = XY Flipped
+eeprom	Joy1Mouseaxis
+
+Mode + L1 < 10 sek
+XmouseInvert = 0, 1
+	0 = X-axis normal
+	1 = X-axis inverted
+eeprom	XInvert
+
+Mode + R1 < 10 sek
+YmouseInvert = 0, 1
+	0 = Y-axis normal
+	1 = Y-axis inverted
+eeprom	YInvert
+
+Mode + L1 < 15 sek
+Controllermode = 0, 1
+	0 = Mouse without joystick R1 press for Keyboard  without R2 L2	
+	1 = Mouse with joystick without R2 L2
+eeprom	controllermode
+
+Mode + R1 < 15 sek
+Screensaver = 0, 1
+	0 = Screensaver off
+	1 = Screensaver after 4 min
+eeprom	screensavermode
