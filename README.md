@@ -5,25 +5,27 @@
 For informations see:
 https://www.sudomod.com/forum/viewtopic.php?f=51&p=52659
 
-## install:
+## install, connect to the Gb over SSH. You need a active internet connection. Start the installation with:
+:
 
 ```
-"cd"
-"git clone https://github.com/MarcusKoe/moooarcuuuusCode.git"
-"cd moooarcuuuusCode"
-"python setup.py"
+cd
+git clone https://github.com/MarcusKoe/moooarcuuuusCode.git
+cd moooarcuuuusCode
+python setup.py
 ```
 
-## update:
+## update, connect to the Gb over SSH. You need a active internet connection. Start the installation with:
+:
 
 ```
-"cd"
-"cd moooarcuuuusCode"
-"git pull"
-"python setup.py"
+cd
+cd moooarcuuuusCode
+git pull
+python setup.py
 ```
 
-## Manuall install:
+## Manuall install, offline:
 
 ```
 Put SD-Card in your computer
