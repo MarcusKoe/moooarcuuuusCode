@@ -33,6 +33,8 @@ import stat
 #import os
 #import stat
 
+oldtime	= time.time()
+
 try:
   from configparser import ConfigParser
 except ImportError:
@@ -202,7 +204,16 @@ def readVoltage():
   
   logging.info("VoltVal [" + str(voltVal) + "]")
   logging.info("Volt    [" + str(volt) + "]V")
-  
+  ###Logging voltage start
+  #global oldtime
+  #newtime = time.time()
+  #deltatime = newtime - oldtime
+  #oldtime = newtime
+  #with open("/home/pi/moooarcuuuusCode/voltage.txt", 'a') as dfile:
+  #  dfile.write(str(deltatime) + ' ' + str(volt) + '\n')
+  #  dfile.close()
+  ###Logging voltage stop
+
   global batt_islow
   
   if (batt_islow):
