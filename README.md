@@ -5,8 +5,8 @@
 For informations see:
 https://www.sudomod.com/forum/viewtopic.php?f=51&p=52659
 
-## install, connect to the Gb over SSH. You need a active internet connection. Start the installation with:
-:
+## install
+connect to the Gb over SSH. You need a active internet connection. Start the installation with:
 
 ```
 cd
@@ -15,8 +15,8 @@ cd moooarcuuuusCode
 python setup.py
 ```
 
-## update, connect to the Gb over SSH. You need a active internet connection. Start the installation with:
-:
+## update
+connect to the Gb over SSH. You need a active internet connection. Start the installation with:
 
 ```
 cd
