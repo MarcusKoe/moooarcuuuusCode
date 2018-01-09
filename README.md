@@ -62,17 +62,9 @@ Original from Kite - with screensaver
 Mousemode for Kites SAIO. Tested adventures in scummvm: Monkey island 1 + 2, Sam and Max, Broken Sword, Simon the Sorcerer 1 + 2. With screensaver
 
 
-"Dpad mouse mode" with Released L1:
 
 ```
-Dpad is left right up down
-A - Enter
-B - Escape
-Y - Period (.)
-X - Space
-Start - Left ctrl
-Select - Left shift
-"Dpad mouse mode" with Pressed L1:
+"Dpad mouse mode" with Released R1:
 Dpad - Mousemove
 A - Mouse right click
 B - Mouse left click
@@ -80,6 +72,15 @@ Y - Period (.)
 X - Escape
 Start - Space
 Select - F5 + Left ctrl (scummvm menu)
+
+"Dpad keyboard mode" with Pressed R1:
+Dpad is left right up down (arrow keys)
+A - Enter
+B - Escape
+Y - Period (.)
+X - Space
+Start - Left ctrl
+Select - Left shift
 ```
 
 
