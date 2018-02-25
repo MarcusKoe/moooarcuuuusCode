@@ -67,20 +67,11 @@ def makeconfig():
 	parser.set('general', 'yres', yres)
 	with open(f_conf, 'w') as cfile:
 		parser.write(cfile)
+	return(bvers)
 
 f_conf = os.path.join(d_bse, 'configuration.ini')
-if (os.path.isfile(f_conf)):
-	yesno = raw_input('There is a config file. Should the configuration file be deleted? \n \n Type "YES" or "NO" ')
-	if (yesno == 'NO'):
-		print('Keep Configuration \n')
-	elif (yesno == 'YES'):
-		rm(f_conf)
-		makeconfig()
-	else:
-		print('No valid input')
-		sys.exit()
-else:
-	makeconfig()
+bvers = makeconfig()
+
 
 print('Should the "crontab" (autostart) be updated?')
 yesno = raw_input('Type "YES" or "NO" ')
