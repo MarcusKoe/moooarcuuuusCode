@@ -35,10 +35,10 @@ if not (os.path.exists(d_imgs)):
 
 bvers, xres, yres = loadconfig(f_conf)
 
-d_prec-ports = os.path.join(d_bse, 'arduino-precompiled-ports', bvers, xres + 'x' + yres)
+d_prec_ports = os.path.join(d_bse, 'arduino-precompiled-ports', bvers, xres + 'x' + yres)
 d_prec = os.path.join(d_bse, 'arduino-precompiled-selectbutton', bvers, xres + 'x' + yres)
 
-screenres = xsize + 'x' + ysize
+screenres = xres + 'x' + yres
 #print(d_prec)
 
 
@@ -61,7 +61,7 @@ def generateimage(strg, targetfile):
 
 def SelectButton(channel):
 
-	files = find(d_prec-ports, 0, 100)
+	files = find(d_prec_ports, 0, 100)
 	for f in files:
 		if not f.endswith('.hex'):
 			print('No .hex file')
