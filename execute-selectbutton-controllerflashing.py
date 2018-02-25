@@ -10,6 +10,7 @@ import time
 import subprocess
 from pythonfunctions import mkdir as mkdir
 from pythonfunctions import find as find
+from shutil import copyfile as cp
 from pythonfunctions import loadconfig as loadconfig
 #from pythonfunctions import getflashfile as getflashfile
 
@@ -69,7 +70,7 @@ def SelectButton(channel):
 		fname = os.path.basename(f)
 		targetfile = os.path.join(d_prec, fname)
 		if not os.path.isfile(targetfile):
-			os.rename(f, targetfile)
+			cp(f, targetfile)
 
 	print('Pressed Selectbutton')
 	global count
