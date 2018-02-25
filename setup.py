@@ -138,4 +138,15 @@ else:
 	
 sleep(1)
 
-print('Installation ready. Please reboot this system. Just type "sudo reboot" \n \n Have a nice day')
+print('If you are using this program for the first time, you should install the keyboardmouse layout and restart the system. You must then reconfigure the input device. On the "Configure Input" screen hold down R1 in the input window and press X or Y.')
+
+print('\nWould you install the keyboardmouse layout and restart the system?')
+yesno = raw_input('Type "YES" or "NO"  ')
+if (yesno == 'YES'):
+	flashcommand = 'sh flash.sh arduino-precompiled-ports/' + bvers + '/SAIO_v2a-MouseKeyboard.ino.hex'
+	os.system(flashcommand)
+	sleep(1)
+	rebootcommand = 'sudo reboot'
+	os.system(rebootcommand)
+else:
+	print('Installation done \n \n Have a nice day')
