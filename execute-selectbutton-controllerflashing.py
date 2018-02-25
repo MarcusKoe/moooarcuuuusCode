@@ -10,8 +10,8 @@ import time
 import subprocess
 from pythonfunctions import mkdir as mkdir
 from pythonfunctions import find as find
-
-from ConfigParser import SafeConfigParser
+from pythonfunctions import loadconfig as loadconfig
+#from pythonfunctions import getflashfile as getflashfile
 
 
 GPIO.cleanup()
@@ -32,13 +32,11 @@ os.system('chmod +x ' + b_flsh)
 if not (os.path.exists(d_imgs)):
 	mkdir(d_imgs)
 
-parser = SafeConfigParser()
-parser.read(f_conf)
 
-boardversion = parser.get('general', 'boardversion')
-d_prec = os.path.join(d_bse, 'arduino-precompiled-selectbutton', boardversion)
-xsize = parser.get('general', 'xres')
-ysize = parser.get('general', 'yres')
+bvers, xres, yres = loadconfig(f_conf)
+
+d_prec-ports = os.path.join(d_bse, 'arduino-precompiled-ports', bvers, xres + 'x' + yres)
+d_prec = os.path.join(d_bse, 'arduino-precompiled-selectbutton', bvers, xres + 'x' + yres)
 
 screenres = xsize + 'x' + ysize
 #print(d_prec)
@@ -63,6 +61,15 @@ def generateimage(strg, targetfile):
 
 def SelectButton(channel):
 
+	files = find(d_prec-ports, 0, 100)
+	for f in files:
+		if not f.endswith('.hex'):
+			print('No .hex file')
+			sys.exit()
+		fname = os.path.basename(f)
+		targetfile = os.path.join(d_prec, fname)
+		if not os.path.isfile(targetfile):
+			os.rename(f, targetfile)
 
 	print('Pressed Selectbutton')
 	global count

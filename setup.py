@@ -67,10 +67,10 @@ def makeconfig():
 	parser.set('general', 'yres', yres)
 	with open(f_conf, 'w') as cfile:
 		parser.write(cfile)
-	return(bvers)
+	return(bvers, xres, yres)
 
 f_conf = os.path.join(d_bse, 'configuration.ini')
-bvers = makeconfig()
+bvers, xres, yres = makeconfig()
 
 
 print('Should the "crontab" (autostart) be updated?')
@@ -134,7 +134,7 @@ print('If you are using this program for the first time, you should install the 
 print('\nWould you install the keyboardmouse layout and restart the system?')
 yesno = raw_input('Type "YES" or "NO"  ')
 if (yesno == 'YES'):
-	flashcommand = 'sh flash.sh arduino-precompiled-ports/' + bvers + '/SAIO_v2a-MouseKeyboard.ino.hex'
+	flashcommand = 'sh flash.sh arduino-precompiled-ports/' + bvers + '/' + xres + 'x' + yres + '/SAIO_v2a-MouseKeyboard.ino.hex'
 	os.system(flashcommand)
 	sleep(1)
 	rebootcommand = 'sudo reboot'

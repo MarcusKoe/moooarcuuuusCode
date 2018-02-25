@@ -1,6 +1,7 @@
 import os
 import string
 import shutil
+from ConfigParser import SafeConfigParser
 
 def rm(source):
 	if os.path.isfile(source) == True:
@@ -28,3 +29,17 @@ def rmdir(directory):
 	for f in files:
 		rm(f)
 	shutil.rmtree(directory) 
+
+def loadconfig(configfile):
+	parser = SafeConfigParser()
+	parser.read(configfile)
+	bvers = parser.get('general', 'boardversion')
+	xres = parser.get('general', 'xres')
+	yres = parser.get('general', 'yres')
+	return(bvers, xres, yres)
+
+
+def getflashfile(portbutton, fname, bvers, xres, yres):
+	
+	res=os.path.join(portbutton, bvers, xres + 'x' + yres, fname)
+	return(res)

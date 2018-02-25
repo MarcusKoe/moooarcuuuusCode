@@ -8,9 +8,8 @@ from time import sleep as sleep
 import time
 from pythonfunctions import mkdir as mkdir
 from pythonfunctions import find as find
-
-from ConfigParser import SafeConfigParser
-
+from pythonfunctions import loadconfig as loadconfig
+#from pythonfunctions import getflashfile as getflashfile
 
 
 d_bse = '/home/pi/moooarcuuuusCode'
@@ -18,11 +17,9 @@ f_conf = os.path.join(d_bse, 'configuration.ini')
 b_flsh = os.path.join(d_bse, 'flash.sh')
 os.system('chmod +x ' + b_flsh)
 
-parser = SafeConfigParser()
-parser.read(f_conf)
+bvers, xres, yres = loadconfig(f_conf)
 
-boardversion = parser.get('general', 'boardversion')
-d_prec = os.path.join(d_bse, 'arduino-precompiled-ports', boardversion)
+d_prec = os.path.join(d_bse, 'arduino-precompiled-ports', bvers, xres + 'x' + yres)
 
 
 files = find(d_prec, 0, 100)
