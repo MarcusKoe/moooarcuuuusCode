@@ -9,21 +9,36 @@ from time import sleep as sleep
 import time
 import subprocess
 from ConfigParser import SafeConfigParser
-from pythonfunctions import rm
-from pythonfunctions import mkdir
-from pythonfunctions import find
-from pythonfunctions import rmdir
+from pythonfunctions import rm as rm
+from pythonfunctions import mkdir as mkdir
+from pythonfunctions import find as find
+from pythonfunctions import rmdir as rmdir
+from pythonfunctions import mv as mv
+from pythonfunctions import getVars as getVars
+from pythonfunctions import arduinocompile as arduinocompile
 
-cron_selectbutton = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
-cron_ports = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/ionice -c 3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py.logfile.txt 2>&1'
+#sleep(1000)
 
-d_usr = '/home/pi'
-d_bse = os.path.join(d_usr, 'moooarcuuuusCode')
+cron_selectbutton = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
+cron_ports = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py.logfile.txt 2>&1'
+cron_arduinocompile = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-arduinocompile.py >> /home/pi/moooarcuuuusCode/execute-arduinocompile.py.logfile.txt 2>&1'
+
+d_usr = getVars('d_usr')
+d_bse = getVars('d_bse')
+f_arduinotar = getVars('f_arduinotar')
+d_ardupath = getVars('d_ardupath')
+d_ardulibaries = getVars('d_ardulibaries')
+f_arduexec = getVars('f_arduexec')
+f_nicoshid = getVars('f_nicoshid')
+d_precsb = getVars('d_precsb')
+httpArduino = getVars('httpArduino')
+httpNicosHID = getVars('httpNicosHID')
 
 currentdir = os.getcwd()
 
 if (not currentdir == d_bse):
 	print('Wrong directory')
+	print("Have a nice day")
 	sys.exit()
 
 warning = '\n \nParts of this program are not created by me. These parts can have their own licenses. The following license text only refers to my program code.\n \n This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, version 3. \n \n This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details. \n \n You should have received a copy of the GNU General Public License along with this program. If not, see <http://www.gnu.org/licenses/>. \n \n THIS IS UNSTABLE SOFTWARE! \n \n THIS SOFTWARE WORKS ONLY WITH KITES SAIO BOARD!!! \n \n'
@@ -38,6 +53,61 @@ if (not yesno == 'YES'):
 sleep(1)
 print('Generate list of installed packages, this can take a while')
 packagecache = apt.Cache()
+
+
+
+yesno = raw_input('This program requires the arduino framework 1.8.5, if you dont want to download it yet, save it as ' + f_arduinotar +'. Otherwise it will be downloaded now from: ' + httpArduino + '. \n \n Are you ready? \n Type "YES" or "NO"')
+if (not yesno == 'YES'):
+	print("Have a nice day")
+	sys.exit()
+
+if not os.path.isfile(f_arduinotar):
+	wgetcmd = 'wget -c ' + httpArduino + ' -O ' + f_arduinotar
+	os.system(wgetcmd)
+
+print("Testing for existing arduino, delete if exist")
+if os.path.isdir(d_ardupath):
+	#print("Delete")
+	rmdir(d_ardupath)
+
+print("Extract arduino")
+tarext = 'tar xf ' + f_arduinotar
+os.system(tarext)
+
+print("Testing arduino, compiling Blink")
+arduinotest = 'mkdir -p /dev/shm/ardutest && ./arduino-1.8.5/arduino --verify --board arduino:avr:leonardo --pref build.path=/dev/shm/ardutest arduino-1.8.5/examples/01.Basics/Blink/Blink.ino'
+p=(subprocess.call(arduinotest, shell=True, stderr=subprocess.PIPE))
+#print(p, "Result")
+if (p == 0):
+	print("Test of the arduino framework passed")
+else:
+	#print("Shitload of fail")
+	print("Compilation of blink failed")
+	print(":( That is very sad")
+	print("Have a nice day")
+	sys.exit()
+
+sleep(1)
+
+yesno = raw_input('This program requires Nicos HID 2.4.4, if you dont want to download it yet, save it as ' + f_nicoshid +'. Otherwise it will be downloaded now from: ' + httpNicosHID + '. \n \n Are you ready? \n Type "YES" or "NO"')
+if (not yesno == 'YES'):
+	print("Have a nice day")
+	sys.exit()
+
+if not os.path.isfile(f_nicoshid):
+	wgetcmd = 'wget -c ' + httpNicosHID + ' -O ' + f_nicoshid
+	os.system(wgetcmd)
+
+
+if not os.path.isfile(f_nicoshid):
+	print("Nicos HUD tar not found")
+	print("Have a nice day")
+	sys.exit()
+
+print("Extract Nicos HID")
+tarext = 'tar xf ' + f_nicoshid + ' -C ' + d_ardulibaries
+#print(tarext)
+os.system(tarext)
 
 
 
@@ -118,6 +188,17 @@ elif (yesno == 'YES'):
 			yesno = raw_input('Type "YES" or "NO" ')
 			if (yesno == 'YES'):
 				os.system(aptstring)
+
+	print('\n\nWould you add the "arduino-autocompile" method (compile new sketches at reboot)?')
+	yesno = raw_input('Type "YES" or "NO"  ')
+	if (yesno == 'YES'):
+		if ('execute-arduinocompile.py' in result):
+			print('Arduino-autocompile already exists, skip insert')
+		else:
+			os.system('(crontab -l 2>/dev/null; echo "\n \n' + cron_arduinocompile + ' \n")| crontab -')
+				
+				
+				
 else:
 	print('No valid input')
 	sys.exit()
@@ -129,15 +210,38 @@ else:
 	
 sleep(1)
 
-print('If you are using this program for the first time, you should install the keyboardmouse layout and restart the system. You must then reconfigure the input device. On the "Configure Input" screen hold down R1 in the input window and press X or Y.')
+
+print('Compiling the sketches. This can take a loOong time on slow raspberries. Time to get a coffee or a tea.')
+arduinocompile()
+
+print('\n \n \nDo you want to delete the downloaded files? \n ' + f_arduinotar + '\n ' + f_nicoshid)
+yesno = raw_input('Type "YES" or "NO"  ')
+if (yesno == 'YES'):
+	rm(f_nicoshid)
+	rm(f_arduinotar)
+
+sleep(1)
+
+print('\n\nIf you are using this program for the first time, you should install the keyboardmouse layout and restart the system. You must then reconfigure the input device. On the "Configure Input" screen hold down R1 in the input window and press X or Y.')
 
 print('\nWould you install the keyboardmouse layout and restart the system?')
 yesno = raw_input('Type "YES" or "NO"  ')
 if (yesno == 'YES'):
-	flashcommand = 'sh flash.sh arduino-precompiled-ports/' + bvers + '/' + xres + 'x' + yres + '/SAIO_v2a-MouseKeyboard.ino.hex'
+	hexfile = d_precsb + '/MouseKeyboard-1.hex'
+	if not os.path.isfile(hexfile):
+		print('No ' + hexfile + ' found')
+		print("Have a nice day")
+		sys.exit()
+	
+	flashcommand = 'sh flash.sh ' + hexfile
+	#print(flashcommand)
 	os.system(flashcommand)
 	sleep(1)
 	rebootcommand = 'sudo reboot'
 	os.system(rebootcommand)
 else:
 	print('Installation done \n \n Have a nice day')
+
+
+
+#tar xfv arduino-1.8.5-linuxarm.tar.xz

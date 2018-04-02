@@ -10,20 +10,21 @@ import time
 import subprocess
 from pythonfunctions import mkdir as mkdir
 from pythonfunctions import find as find
-from shutil import copyfile as cp
+from pythonfunctions import cp as cp
 from pythonfunctions import loadconfig as loadconfig
-#from pythonfunctions import getflashfile as getflashfile
+from pythonfunctions import getVars as getVars
+from pythonfunctions import arduinocompile as arduinocompile
 
+#arduinocompile()
 
 GPIO.cleanup()
 
 count = -1
 selection = ""
 
-d_bse = '/home/pi/moooarcuuuusCode'
-f_conf = os.path.join(d_bse, 'configuration.ini')
-b_pngv = os.path.join(d_bse, 'pngview')
-b_flsh = os.path.join(d_bse, 'flash.sh')
+d_bse = getVars('d_bse')
+b_pngv = getVars('f_pngview')
+b_flsh = getVars('f_flashsh')
 d_imgs = os.path.join(d_bse, 'images')
 f_fimg = os.path.join(d_imgs, 'flashing.png')
 f_styt = os.path.join(d_imgs, 'staytuned.png')
@@ -34,10 +35,9 @@ if not (os.path.exists(d_imgs)):
 	mkdir(d_imgs)
 
 
-bvers, xres, yres = loadconfig(f_conf)
+bvers, xres, yres = loadconfig()
 
-d_prec_ports = os.path.join(d_bse, 'arduino-precompiled-ports', bvers, xres + 'x' + yres)
-d_prec = os.path.join(d_bse, 'arduino-precompiled-selectbutton', bvers, xres + 'x' + yres)
+d_prec = getVars('d_precsb')
 
 screenres = xres + 'x' + yres
 #print(d_prec)
@@ -62,15 +62,6 @@ def generateimage(strg, targetfile):
 
 def SelectButton(channel):
 
-	files = find(d_prec_ports, 0, 100)
-	for f in files:
-		if not f.endswith('.hex'):
-			print('No .hex file')
-			sys.exit()
-		fname = os.path.basename(f)
-		targetfile = os.path.join(d_prec, fname)
-		if not os.path.isfile(targetfile):
-			cp(f, targetfile)
 
 	print('Pressed Selectbutton')
 	global count
