@@ -19,9 +19,9 @@ from pythonfunctions import arduinocompile as arduinocompile
 
 #sleep(1000)
 
-cron_selectbutton = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
+cron_selectbutton = '@reboot /bin/sleep 20 && /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-selectbutton-controllerflashing.py.logfile.txt 2>&1'
 cron_ports = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py >> /home/pi/moooarcuuuusCode/execute-ports-controllerflashing.py.logfile.txt 2>&1'
-cron_arduinocompile = '@reboot /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-arduinocompile.py >> /home/pi/moooarcuuuusCode/execute-arduinocompile.py.logfile.txt 2>&1'
+cron_arduinocompile = '@reboot /bin/sleep 20 && /usr/bin/nice -n 19 /usr/bin/ionice -c3 /usr/bin/python /home/pi/moooarcuuuusCode/execute-arduinocompile.py >> /home/pi/moooarcuuuusCode/execute-arduinocompile.py.logfile.txt 2>&1'
 
 d_usr = getVars('d_usr')
 d_bse = getVars('d_bse')

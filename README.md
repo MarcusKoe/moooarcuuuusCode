@@ -10,6 +10,7 @@ connect to the Gb over SSH. You need a active internet connection. Start the ins
 
 ```
 cd
+sudo apt-get update && sudo apt-get install python-apt
 git clone https://github.com/MarcusKoe/moooarcuuuusCode.git
 cd moooarcuuuusCode
 python setup.py
